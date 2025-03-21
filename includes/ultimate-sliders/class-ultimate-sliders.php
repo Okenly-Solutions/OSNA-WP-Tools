@@ -7,7 +7,8 @@
  * @subpackage OSNA_Tools/includes/ultimate-sliders
  */
 
-class Ultimate_Sliders {
+class Ultimate_Sliders
+{
 
     /**
      * The post type instance.
@@ -23,22 +24,24 @@ class Ultimate_Sliders {
      *
      * @since    1.0.0
      */
-    public function init() {
+    public function init()
+    {
         // Load dependencies
         require_once OSNA_TOOLS_PLUGIN_DIR . 'includes/ultimate-sliders/class-ultimate-sliders-post-type.php';
         require_once OSNA_TOOLS_PLUGIN_DIR . 'includes/ultimate-sliders/class-ultimate-sliders-graphql.php';
-        
+
         // Initialize post type
         $this->post_type = new Ultimate_Sliders_Post_Type();
-        
+
         // Register hooks
         add_action('init', array($this->post_type, 'register_post_type'));
         add_action('add_meta_boxes', array($this->post_type, 'register_meta_boxes'));
         add_action('save_post_ultimate_slider', array($this->post_type, 'save_meta_box_data'), 10, 2);
-        
+        add_action('admin_notices', array($this->post_type, 'display_admin_notices'));
+
         // Register REST API endpoints
         add_action('rest_api_init', array($this, 'register_rest_routes'));
-        
+
         // Initialize GraphQL support if WPGraphQL is active
         if (class_exists('WPGraphQL')) {
             $graphql = new Ultimate_Sliders_GraphQL();
@@ -51,7 +54,8 @@ class Ultimate_Sliders {
      *
      * @since    1.0.0
      */
-    public function register_rest_routes() {
+    public function register_rest_routes()
+    {
         register_rest_route('osna/v1', '/sliders', array(
             'methods' => 'GET',
             'callback' => array($this, 'get_sliders'),
@@ -64,7 +68,7 @@ class Ultimate_Sliders {
             'permission_callback' => '__return_true',
             'args' => array(
                 'id' => array(
-                    'validate_callback' => function($param) {
+                    'validate_callback' => function ($param) {
                         return is_numeric($param);
                     }
                 ),
@@ -79,7 +83,8 @@ class Ultimate_Sliders {
      * @param    WP_REST_Request    $request    The request.
      * @return   WP_REST_Response               The response.
      */
-    public function get_sliders($request) {
+    public function get_sliders($request)
+    {
         $args = array(
             'post_type' => 'ultimate_slider',
             'posts_per_page' => -1,
@@ -103,7 +108,8 @@ class Ultimate_Sliders {
      * @param    WP_REST_Request    $request    The request.
      * @return   WP_REST_Response               The response.
      */
-    public function get_slider($request) {
+    public function get_slider($request)
+    {
         $slider_id = $request->get_param('id');
         $slider = get_post($slider_id);
 
@@ -122,7 +128,8 @@ class Ultimate_Sliders {
      * @param    WP_Post    $slider    The slider post.
      * @return   array                 The slider data.
      */
-    private function prepare_slider_for_response($slider) {
+    private function prepare_slider_for_response($slider)
+    {
         $autoplay = get_post_meta($slider->ID, '_ultimate_slider_autoplay', true);
         $autoplay_speed = get_post_meta($slider->ID, '_ultimate_slider_autoplay_speed', true);
         $transition_effect = get_post_meta($slider->ID, '_ultimate_slider_transition_effect', true);
