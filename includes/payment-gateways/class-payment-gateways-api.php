@@ -19,6 +19,52 @@ class Payment_Gateways_API
     {
         // Register REST API endpoints
         add_action('rest_api_init', array($this, 'register_rest_routes'));
+
+        // Add CORS headers
+        add_action('rest_api_init', function () {
+            remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
+            add_filter('rest_pre_serve_request', array($this, 'add_cors_headers'));
+        }, 15);
+    }
+
+    /**
+     * Add CORS headers to REST API responses.
+     *
+     * @since    1.0.0
+     * @param    bool    $served    Whether the request has already been served.
+     * @return   bool              Whether the request has already been served.
+     */
+    public function add_cors_headers($served)
+    {
+        $origin = get_http_origin();
+
+        // If no origin, allow all
+        if (!$origin) {
+            header('Access-Control-Allow-Origin: *');
+        } else {
+            // Allow specific origins (you can customize this)
+            $allowed_origins = array(
+                'http://localhost:3000',
+                // Add any other domains you want to allow
+            );
+
+            if (in_array($origin, $allowed_origins)) {
+                header('Access-Control-Allow-Origin: ' . $origin);
+            }
+        }
+
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+        header('Access-Control-Allow-Credentials: true');
+        header('Access-Control-Allow-Headers: X-API-Key, Content-Type, Authorization, X-Requested-With');
+
+        // Handle preflight OPTIONS requests
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+            header('Access-Control-Max-Age: 86400'); // Cache preflight for 24 hours
+            status_header(200);
+            exit();
+        }
+
+        return $served;
     }
 
     /**
@@ -29,13 +75,13 @@ class Payment_Gateways_API
     public function register_rest_routes()
     {
         register_rest_route('osna/v1', '/process-payment', array(
-            'methods' => 'POST',
+            'methods' => 'POST, OPTIONS',  // Add OPTIONS method
             'callback' => array($this, 'process_payment'),
             'permission_callback' => array($this, 'check_permissions'),
         ));
 
         register_rest_route('osna/v1', '/payment-gateways', array(
-            'methods' => 'GET',
+            'methods' => 'GET, OPTIONS',  // Add OPTIONS method
             'callback' => array($this, 'get_payment_gateways'),
             'permission_callback' => '__return_true',
         ));
@@ -50,7 +96,12 @@ class Payment_Gateways_API
      */
     public function check_permissions($request)
     {
-        // Check for API key or other authentication mechanism
+        // Always allow OPTIONS requests
+        if ($request->get_method() === 'OPTIONS') {
+            return true;
+        }
+
+        // Check for API key
         $headers = $request->get_headers();
 
         if (isset($headers['x_api_key']) && $headers['x_api_key'][0] === get_option('osna_payment_gateway_api_key')) {

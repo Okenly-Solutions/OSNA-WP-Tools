@@ -49,6 +49,7 @@ class OSNA_Tools
         $this->plugin_name = 'osna-wp-tools';
 
         $this->load_dependencies();
+        $this->setup_cors(); // Add this line
         $this->define_admin_hooks();
         $this->define_public_hooks();
     }
@@ -172,5 +173,22 @@ class OSNA_Tools
         return $this->version;
     }
 
-
+    /**
+     * Add CORS headers for all REST API requests.
+     * This helps ensure your API is accessible from other domains.
+     */
+    private function setup_cors()
+    {
+        add_action('init', function () {
+            // Add headers for CORS preflight requests
+            if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+                header('Access-Control-Allow-Origin: *');
+                header('Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE');
+                header('Access-Control-Allow-Credentials: true');
+                header('Access-Control-Allow-Headers: X-API-Key, Origin, X-Requested-With, Content-Type, Accept, Authorization');
+                header('Access-Control-Max-Age: 86400');
+                exit(0);
+            }
+        });
+    }
 }
