@@ -7,7 +7,8 @@
  * @subpackage OSNA_Tools/includes
  */
 
-class OSNA_Tools {
+class OSNA_Tools
+{
 
     /**
      * The loader that's responsible for maintaining and registering all hooks that power
@@ -42,7 +43,8 @@ class OSNA_Tools {
      *
      * @since    1.0.0
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->version = OSNA_TOOLS_VERSION;
         $this->plugin_name = 'osna-wp-tools';
 
@@ -57,7 +59,8 @@ class OSNA_Tools {
      * @since    1.0.0
      * @access   private
      */
-    private function load_dependencies() {
+    private function load_dependencies()
+    {
         /**
          * The class responsible for orchestrating the actions and filters of the
          * core plugin.
@@ -90,16 +93,24 @@ class OSNA_Tools {
      * @since    1.0.0
      * @access   private
      */
-    private function define_admin_hooks() {
+    private function define_admin_hooks()
+    {
         $plugin_admin = new OSNA_Tools_Admin($this->get_plugin_name(), $this->get_version());
 
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
         $this->loader->add_action('admin_menu', $plugin_admin, 'add_plugin_admin_menu');
-        
+
         // Initialize Ultimate Sliders
         $ultimate_sliders = new Ultimate_Sliders();
         $ultimate_sliders->init();
+
+        // Initialize Payment Gateways
+        if (file_exists(OSNA_TOOLS_PLUGIN_DIR . 'includes/payment-gateways/class-payment-gateways.php')) {
+            require_once OSNA_TOOLS_PLUGIN_DIR . 'includes/payment-gateways/class-payment-gateways.php';
+            $payment_gateways = new Payment_Gateways();
+            $payment_gateways->init();
+        }
     }
 
     /**
@@ -109,7 +120,8 @@ class OSNA_Tools {
      * @since    1.0.0
      * @access   private
      */
-    private function define_public_hooks() {
+    private function define_public_hooks()
+    {
         $plugin_public = new OSNA_Tools_Public($this->get_plugin_name(), $this->get_version());
 
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
@@ -121,7 +133,8 @@ class OSNA_Tools {
      *
      * @since    1.0.0
      */
-    public function run() {
+    public function run()
+    {
         $this->loader->run();
     }
 
@@ -132,7 +145,8 @@ class OSNA_Tools {
      * @since     1.0.0
      * @return    string    The name of the plugin.
      */
-    public function get_plugin_name() {
+    public function get_plugin_name()
+    {
         return $this->plugin_name;
     }
 
@@ -142,7 +156,8 @@ class OSNA_Tools {
      * @since     1.0.0
      * @return    OSNA_Tools_Loader    Orchestrates the hooks of the plugin.
      */
-    public function get_loader() {
+    public function get_loader()
+    {
         return $this->loader;
     }
 
@@ -152,7 +167,10 @@ class OSNA_Tools {
      * @since     1.0.0
      * @return    string    The version number of the plugin.
      */
-    public function get_version() {
+    public function get_version()
+    {
         return $this->version;
     }
+
+
 }

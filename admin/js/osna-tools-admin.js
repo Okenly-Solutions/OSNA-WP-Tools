@@ -151,4 +151,22 @@
         });
     });
 
+
+    // Add this to your existing admin.js file:
+
+    // Payment Gateways Admin JS
+    jQuery(document).ready(function ($) {
+        // Generate API Key
+        $('#generate_api_key').on('click', function () {
+            // Generate a random 32-character string
+            var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            var api_key = '';
+            for (var i = 0; i < 32; i++) {
+                api_key += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+
+            $('#osna_payment_gateway_api_key').val(api_key);
+        });
+    });
+
 })(jQuery);

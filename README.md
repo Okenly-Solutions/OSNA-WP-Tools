@@ -15,6 +15,10 @@ Create beautiful, responsive sliders for your splash pages with support for:
 - Autoplay and transition effects
 - Navigation controls (dots and arrows)
 
+### Custom API Endpoint For LyGos
+
+- This plugin adds a custom API endpoint to process payments through the Lygos API.
+
 ## Installation
 
 1. Upload the `osna-wp-tools` folder to the `/wp-content/plugins/` directory
