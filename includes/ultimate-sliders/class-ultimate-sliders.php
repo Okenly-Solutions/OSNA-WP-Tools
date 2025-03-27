@@ -74,6 +74,18 @@ class Ultimate_Sliders
                 ),
             ),
         ));
+
+        // Add CORS headers for the OSNA API endpoints
+        add_filter('rest_pre_serve_request', function ($served, $result, $request, $server) {
+            // Only add headers for OSNA routes
+            if (strpos($request->get_route(), '/osna/v1/') === 0) {
+                header('Access-Control-Allow-Origin: *');
+                header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+                header('Access-Control-Allow-Credentials: true');
+                header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization');
+            }
+            return $served;
+        }, 10, 4);
     }
 
     /**

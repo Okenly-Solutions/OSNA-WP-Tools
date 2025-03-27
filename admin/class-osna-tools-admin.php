@@ -92,10 +92,20 @@ class OSNA_Tools_Admin
             __('OSNA WP Tools', 'osna-wp-tools'),
             __('OSNA Tools', 'osna-wp-tools'),
             'manage_options',
-            'osna-wp-tools',
-            array($this, 'display_plugin_admin_dashboard'),
+            'osna-wp-tools', // This is the main slug
+            array($this, 'display_plugin_admin_dashboard'), // This function displays the dashboard
             'dashicons-admin-generic',
             30
+        );
+
+        // Add submenu for Dashboard (makes it appear explicitly in the submenu)
+        add_submenu_page(
+            'osna-wp-tools',
+            __('Dashboard', 'osna-wp-tools'),
+            __('Dashboard', 'osna-wp-tools'),
+            'manage_options',
+            'osna-wp-tools', // Important: This must match the parent menu slug to highlight correctly
+            array($this, 'display_plugin_admin_dashboard')
         );
 
         // Add submenu for Ultimate Sliders

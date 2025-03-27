@@ -55,7 +55,7 @@ class Ultimate_Sliders_Post_Type
             'hierarchical' => false,
             'public' => true,
             'show_ui' => true,
-            'show_in_menu' => 'osna-wp-tools', // Show as submenu under our custom menu
+            'show_in_menu' => false, // Show as submenu under our custom menu
             'menu_position' => 5,
             'menu_icon' => 'dashicons-slides',
             'show_in_admin_bar' => true,
