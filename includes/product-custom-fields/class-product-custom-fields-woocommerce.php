@@ -118,8 +118,25 @@ class Product_Custom_Fields_WooCommerce
                 case 'select':
                     $options = array();
                     if (!empty($field['field_options'])) {
-                        foreach ($field['field_options'] as $option_value => $option_label) {
-                            $options[$option_value] = $option_label;
+                        // Check if field_options is a string (pipe-separated format)
+                        if (is_string($field['field_options'])) {
+                            $option_pairs = explode('|', $field['field_options']);
+                            foreach ($option_pairs as $option_pair) {
+                                // If the option contains a value/label separator
+                                if (strpos($option_pair, ':') !== false) {
+                                    list($option_value, $option_label) = explode(':', $option_pair, 2);
+                                    $options[trim($option_value)] = trim($option_label);
+                                } else {
+                                    // Use the same value for both value and label
+                                    $options[trim($option_pair)] = trim($option_pair);
+                                }
+                            }
+                        } 
+                        // If it's already an array (from database)
+                        else if (is_array($field['field_options'])) {
+                            foreach ($field['field_options'] as $option_value => $option_label) {
+                                $options[$option_value] = $option_label;
+                            }
                         }
                     }
 
@@ -247,8 +264,25 @@ class Product_Custom_Fields_WooCommerce
                 case 'select':
                     echo '<select id="' . esc_attr($meta_key . '_' . $loop) . '" name="' . esc_attr($meta_key . '[' . $loop . ']') . '">';
                     if (!empty($field['field_options'])) {
-                        foreach ($field['field_options'] as $option_value => $option_label) {
-                            echo '<option value="' . esc_attr($option_value) . '" ' . selected($value, $option_value, false) . '>' . esc_html($option_label) . '</option>';
+                        // Check if field_options is a string (pipe-separated format)
+                        if (is_string($field['field_options'])) {
+                            $option_pairs = explode('|', $field['field_options']);
+                            foreach ($option_pairs as $option_pair) {
+                                // If the option contains a value/label separator
+                                if (strpos($option_pair, ':') !== false) {
+                                    list($option_value, $option_label) = explode(':', $option_pair, 2);
+                                    echo '<option value="' . esc_attr(trim($option_value)) . '" ' . selected($value, trim($option_value), false) . '>' . esc_html(trim($option_label)) . '</option>';
+                                } else {
+                                    // Use the same value for both value and label
+                                    echo '<option value="' . esc_attr(trim($option_pair)) . '" ' . selected($value, trim($option_pair), false) . '>' . esc_html(trim($option_pair)) . '</option>';
+                                }
+                            }
+                        } 
+                        // If it's already an array (from database)
+                        else if (is_array($field['field_options'])) {
+                            foreach ($field['field_options'] as $option_value => $option_label) {
+                                echo '<option value="' . esc_attr($option_value) . '" ' . selected($value, $option_value, false) . '>' . esc_html($option_label) . '</option>';
+                            }
                         }
                     }
                     echo '</select>';

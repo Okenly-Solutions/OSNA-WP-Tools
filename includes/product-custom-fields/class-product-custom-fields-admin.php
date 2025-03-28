@@ -422,7 +422,7 @@ class Product_Custom_Fields_Admin
                 <!-- Footer -->
                 <div class="bg-gray-50 px-8 py-4 border-t border-gray-200">
                     <div class="flex items-center justify-between">
-                        <p class="text-sm text-gray-500">© <?php echo date('Y'); ?> OSNA WP Tools</p>
+                        <p class="text-sm text-gray-500"> 2023 OSNA WP Tools</p>
                         <a href="https://osna.com" target="_blank" class="text-sm text-blue-600 hover:text-blue-800">
                             <?php _e('Visit OSNA', 'osna-wp-tools'); ?>
                         </a>
@@ -608,13 +608,27 @@ class Product_Custom_Fields_Admin
             $options = array();
 
             foreach ($lines as $line) {
-                $parts = explode('|', $line, 2);
-                if (count($parts) === 2) {
+                $line = trim($line);
+                if (empty($line)) continue;
+                
+                // Check if the line contains value:label format
+                if (strpos($line, ':') !== false) {
+                    $parts = explode(':', $line, 2);
                     $key = trim($parts[0]);
                     $value = trim($parts[1]);
                     if (!empty($key)) {
                         $options[$key] = $value;
                     }
+                } 
+                // If it's a pipe-separated list of options on a single line
+                else if (strpos($line, '|') !== false) {
+                    // Store as a string to be parsed when displayed
+                    $options = $line;
+                    break;
+                }
+                // Simple option with same key and value
+                else {
+                    $options[trim($line)] = trim($line);
                 }
             }
 
@@ -677,13 +691,27 @@ class Product_Custom_Fields_Admin
             $options = array();
 
             foreach ($lines as $line) {
-                $parts = explode('|', $line, 2);
-                if (count($parts) === 2) {
+                $line = trim($line);
+                if (empty($line)) continue;
+                
+                // Check if the line contains value:label format
+                if (strpos($line, ':') !== false) {
+                    $parts = explode(':', $line, 2);
                     $key = trim($parts[0]);
                     $value = trim($parts[1]);
                     if (!empty($key)) {
                         $options[$key] = $value;
                     }
+                } 
+                // If it's a pipe-separated list of options on a single line
+                else if (strpos($line, '|') !== false) {
+                    // Store as a string to be parsed when displayed
+                    $options = $line;
+                    break;
+                }
+                // Simple option with same key and value
+                else {
+                    $options[trim($line)] = trim($line);
                 }
             }
 
