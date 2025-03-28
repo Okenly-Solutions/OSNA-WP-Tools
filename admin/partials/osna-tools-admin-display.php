@@ -21,7 +21,7 @@
         
         <!-- Content -->
         <div class="p-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Ultimate Sliders Card -->
                 <div class="bg-gray-50 rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-lg">
                     <div class="p-6">
@@ -46,6 +46,35 @@
                             
                             <a href="<?php echo admin_url('post-new.php?post_type=ultimate_slider'); ?>" class="text-sm text-blue-600 hover:text-blue-800">
                                 Create New
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- WooCommerce Custom Fields Card -->
+                <div class="bg-gray-50 rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-lg">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <span class="w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                </svg>
+                            </span>
+                            <h2 class="text-xl font-medium text-gray-800 ml-3">Product Custom Fields</h2>
+                        </div>
+                        
+                        <p class="text-gray-600 mb-6">Create and manage custom fields for WooCommerce products. Add extra information and attributes to enhance your product listings.</p>
+                        
+                        <div class="flex items-center justify-between">
+                            <a href="<?php echo admin_url('admin.php?page=osna-product-custom-fields'); ?>" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Manage Fields
+                                <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
+                            
+                            <a href="<?php echo admin_url('admin.php?page=osna-product-custom-fields&action=new'); ?>" class="text-sm text-blue-600 hover:text-blue-800">
+                                Add New Field
                             </a>
                         </div>
                     </div>
@@ -136,7 +165,7 @@
         <!-- Footer -->
         <div class="bg-gray-50 px-8 py-4 border-t border-gray-200">
             <div class="flex items-center justify-between">
-                <p class="text-sm text-gray-500">© <?php echo date('Y'); ?> OSNA WP Tools</p>
+                <p class="text-sm text-gray-500"> <?php echo date('Y'); ?> OSNA WP Tools</p>
                 <a href="https://osna.com" target="_blank" class="text-sm text-blue-600 hover:text-blue-800">Visit OSNA</a>
             </div>
         </div>

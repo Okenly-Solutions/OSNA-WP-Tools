@@ -84,6 +84,16 @@ class OSNA_Tools
          */
         require_once OSNA_TOOLS_PLUGIN_DIR . 'includes/ultimate-sliders/class-ultimate-sliders.php';
 
+        /**
+         * Load Product Custom Fields module
+         */
+        require_once OSNA_TOOLS_PLUGIN_DIR . 'includes/product-custom-fields/class-product-custom-fields.php';
+
+        /**
+         * Load Product Custom Fields module
+         */
+        require_once OSNA_TOOLS_PLUGIN_DIR . 'includes/product-custom-fields/class-product-custom-fields.php';
+
         $this->loader = new OSNA_Tools_Loader();
     }
 
@@ -105,6 +115,10 @@ class OSNA_Tools
         // Initialize Ultimate Sliders
         $ultimate_sliders = new Ultimate_Sliders();
         $ultimate_sliders->init();
+
+        // Initialize Product Custom Fields
+        $product_custom_fields = new Product_Custom_Fields();
+        $product_custom_fields->init();
 
         // Initialize Payment Gateways
         if (file_exists(OSNA_TOOLS_PLUGIN_DIR . 'includes/payment-gateways/class-payment-gateways.php')) {
