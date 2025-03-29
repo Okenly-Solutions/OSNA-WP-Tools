@@ -36,26 +36,10 @@ class Payment_Gateways_API
      */
     public function add_cors_headers($served)
     {
-        $origin = get_http_origin();
-
-        // If no origin, allow all
-        if (!$origin) {
-            header('Access-Control-Allow-Origin: *');
-        } else {
-            // Allow specific origins (you can customize this)
-            $allowed_origins = array(
-                'http://localhost:3000',
-                // Add any other domains you want to allow
-            );
-
-            if (in_array($origin, $allowed_origins)) {
-                header('Access-Control-Allow-Origin: ' . $origin);
-            }
-        }
-
+        // Allow requests from any origin
+        header('Access-Control-Allow-Origin: *');
         header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-        header('Access-Control-Allow-Credentials: true');
-        header('Access-Control-Allow-Headers: X-API-Key, Content-Type, Authorization, X-Requested-With');
+        header('Access-Control-Allow-Headers: X-API-Key, x-api-key, Content-Type, Authorization, X-Requested-With');
 
         // Handle preflight OPTIONS requests
         if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
