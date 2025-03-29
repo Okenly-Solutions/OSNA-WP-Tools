@@ -55,11 +55,7 @@ class Product_Custom_Fields_GraphQL
         // Register ProductCustomFieldValue type
         register_graphql_object_type('ProductCustomFieldValue', [
             'description' => __('Value of a custom field for a product', 'osna-wp-tools'),
-            'fields' => [
                 'fieldId' => [
-                    'type' => 'Int',
-                    'description' => __('Field ID', 'osna-wp-tools'),
-                ],
                 'fieldName' => [
                     'type' => 'String',
                     'description' => __('Field name/key', 'osna-wp-tools'),
