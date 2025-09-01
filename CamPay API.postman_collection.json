@@ -1,0 +1,1200 @@
+{
+	"info": {
+		"_postman_id": "3cce2c35-3a74-47d4-b29a-156bad1b6300",
+		"name": "CamPay API",
+		"description": "Online Payments Made Easy\n\nSignup on our demo site: [https://demo.campay.net](https://demo.campay.net)\n\nLogin and register an **application**\n\n**Error codes reference**\n\n<table><tbody><tr><th>Error code</th><th>Description</th></tr><tr><td>ER101</td><td>Invalid phone number. Ensure the number starts with the country code. e.g 237xxxxxxxxx<br></td></tr><tr><td>ER102</td><td>Unsupported Carrier phone number. Currently, only MTN and Orange phone numbers are accepted for mobile money<br></td></tr><tr><td>ER201</td><td>Invalid amount. Decimal numbers are NOT allowed. The Amount can be sent as integer or string<br></td></tr><tr><td>ER301</td><td>Insufficient balance. Trying to withdraw an amount which is above your current balance for the specific carrier<br></td></tr></tbody></table>\n\n# **Authentication**\n\nThere are two methods of authenticating requests.\n\n1. Using a **permanent access token** that does not expire.\n2. Using a **temporary access token** that expires and you can renew it.\n    \n\n## Method 1\n\n### Permanent access token:\n\nYou can find your permanent access token under the APP KEYS section of your app.  \nCopy it and use it in the Authorisation header of your request. e.g\n\n``` json\n{\n    Authorization: Token 69e2df238ea8d66f24018574c5de51e2b77d9abb,\n    Content-Type: application/json\n}\n\n```\n\n## Method 2\n\n## Temporary access token:",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11541752",
+		"_collection_link": "https://orange-star-431678.postman.co/workspace/API-Projects~51107f16-dfbd-480b-8ab3-af8dbe47b268/collection/11541752-3cce2c35-3a74-47d4-b29a-156bad1b6300?action=share&source=collection_link&creator=11541752"
+	},
+	"item": [
+		{
+			"name": "Get access token",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"{{app_username}}\",\n    \"password\": \"{{app_password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/token/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"token",
+						""
+					]
+				},
+				"description": "# /token/\nAfter registering your application from your account, we generate API access username and password for that application which will be used to get access tokens before you can perform operations on our API.\n\n# <strong>Response parameters</strong>\n<ul>\n   <li><b>token</b> : To be used in subsequent requests in the <b>Authorization</b> header.</li>\n   <li><b>expires_in</b> : Shows when the token will expire. In <b>seconds</b></li>\n</ul>\n\n# <strong>Successful response status code</strong>: \n<h6>200</h6>"
+			},
+			"response": [
+				{
+					"name": "Get access token",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{app_username}}\",\n    \"password\": \"{{app_password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/token/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"token",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.0 (Ubuntu)"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 27 Oct 2020 18:44:43 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "192"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Allow",
+							"value": "POST, OPTIONS"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Language, Cookie, Origin"
+						},
+						{
+							"key": "Content-Language",
+							"value": "en"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsInVpZCI6Mn0.eyJpYXQiOjE2MDM4MjQyODMsIm5iZiI6MTYwMzgyNDI4MywiZXhwIjoxNjAzODI3ODgzfQ.ufW8sCrf_W2RFpVvH6zri0l7pJLnkPXCZi1zc10ZvOg\",\n    \"expires_in\": 3600\n}"
+				}
+			]
+		},
+		{
+			"name": "Request Payment",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": \"{{amount}}\",\n    \"currency\": \"{{currency}}\",\n    \"from\": \"{{from}}\",\n    \"description\": \"{{description}}\",\n    \"external_reference\": \"{{external_reference}}\",\n    \"external_user\": \"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/collect/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"collect",
+						""
+					]
+				},
+				"description": "# /collect/\n\nThis endpoint is used to request payment from users.\n\nWhen this endpoint is called, the user gets a prompt on their mobile phone to authorize the payment by entering their mobile money PIN.\n\nThe token gotten from the `/token` endpoint is used here with the Authorization header beginning with \"Token\".\n\nWhen you initiate a transaction, the default status is PENDING. When processed, the status can be SUCCESSFUL or FAILED.  \n  \nThis endpoint supports **Idempotency** on **external_reference field.** If you make the first request with a particular external_reference and then make the second request with the same external_reference as the first, you will get the results of the first request. Change the external_reference or leave it blank to initiate a new transaction\n\n# Request Body\n\n**Format**: Json\n\n**Parameters**:\n\n<ul><li><p>\"<b>amount</b>\": \"A valid <b>integer</b>\" e.g \"5\",</p></li><li><p>\"<b>currency</b>\": \"XAF\"</p></li><li><p>\"<b>from</b>\": \"A valid phone number with country code\" e.g \"2376xxxxxxxx\",</p></li><li><p>\"<b>description</b>\": \"Payment description\",</p></li><li><p>\"<b>external_reference</b>\": \"OPTIONAL. You can use this field to specify the reference of the transaction generated by your system. We will return this reference to you on the /transaction status endpoint\"</p></li><li><p><br>\"A valid and unique <b>UUID4</b>\". Example here<a href=\"https://www.uuidgenerator.net\">https://www.uuidgenerator.net</a>e.g \"2ceefe04-1a79-4914-9dd0-c61748c2aecd\". Each request should have a unique UUID. A request with a duplicate UUID will be <b>rejected</b></p></li></ul>\n\n# Response Body\n\n**Format**: Json\n\n**Parameters**:\n\n<ul><li><p>\"<b>reference</b>\": \"A valid <b>UUID4</b>. This reference is used to check the status of the transaction. Use the <code>/transaction/(reference)/</code> endpoint to check the status.</p></li></ul>\n\n# **Successful response status code**:\n\n###### 200"
+			},
+			"response": [
+				{
+					"name": "Request Payment",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"amount\":\"{{amount}}\",\"from\":\"{{from}}\",\"description\":\"{{description}}\",\"external_reference\": \"{{external_reference}}\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/collect/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"collect",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.0 (Ubuntu)"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 27 Oct 2020 18:57:06 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "52"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Allow",
+							"value": "POST, OPTIONS"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Language, Cookie, Origin"
+						},
+						{
+							"key": "Content-Language",
+							"value": "en"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"reference\": \"bcedde9b-62a7-4421-96ac-2e6179552a1a\",\n    \"ussd_code\": \"*126# for MTN or #150*50# for ORANGE\",\n    \"operator\": \"mtn or orange\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Payment Links",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": \"{{amount}}\",\n    \"currency\": \"{{currency}}\",\n    \"from\": \"{{from}}\",\n    \"description\": \"{{description}}\",\n    \"first_name\": \"{{first_name}}\",\n    \"last_name\": \"{{last_name}}\",\n    \"email\": \"{{email}}\",\n    \"external_reference\": \"{{external_reference}}\",\n    \"redirect_url\": \"{{redirect_url}}\",\n    \"failure_redirect_url\": \"{{redirect_url}}\",\n    \"payment_options\":\"MOMO\",\n    \"payer_can_pay_more\":\"no\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/get_payment_link/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"get_payment_link",
+						""
+					]
+				},
+				"description": "# /get_payment_link/\n\nReceive payments from your clients using generated links.\n\n# Request Body\n\n**Format**: Json\n\n**Parameters**:\n\n<ul><li><p>\"<b>amount</b>\": \"A valid <b>integer</b>\" e.g \"5\",</p></li><li><p>\"<b>currency</b>\": \"XAF\"</p></li><li><p>\"<b>from</b>\": \"OPTIONAL. A valid phone number with country code\" e.g \"2376xxxxxxxx\",</p></li><li><p>\"<b>description</b>\": \"Payment description\",</p></li><li><p>\"<b>first_name</b>\": \"OPTIONAL\". String</p></li><li><p>\"<b>last_name</b>\": \"OPTIONAL\". String</p></li><li><p>\"<b>email</b>\": \"OPTIONAL\". String</p></li><li><p>\"<b>external_reference</b>\": \"OPTIONAL. You can use this field to specify the reference of the transaction generated by your system. We will return this reference to you on the /transaction status endpoint\"</p></li><li><p>\"<b>redirect_url</b>\": \"https://example.com\",</p></li><li><p>\"<b>failure_redirect_url</b>\":\"https://example.com\",</p></li><li><p>\"<b>payment_options</b>\": \"MOMO\". The payment options that you want to be displayed on the payment widget.</p></li><li><div>\"<b>payer_can_pay_more</b>\": \"yes\" or \"no\". OPTIONAL. This field allows you to specify if the payer can pay more than the defined amount for the payment link. If an amount is set and this field value is set to \"yes\", it will be considered as the minimum amount requred for that payment but the payer can pay more.</div></li></ul>\n\n# Response Body\n\n**Format**: Json\n\n**Parameters**:\n\n<ul><li><p>\"<b>link</b>\": Redirect your customer to this returned link to complete the payment.</p></li></ul>\n\n# **Successful response status code**:\n\n###### 200"
+			},
+			"response": [
+				{
+					"name": "Payment Links",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": \"{{amount}}\",\n    \"currency\": \"{{currency}}\",\n    \"description\": \"{{description}}\",\n    \"external_reference\": \"{{external_reference}}\",\n    \"redirect_url\": \"{{redirect_url}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/get_payment_link/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"get_payment_link",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 06 Nov 2021 01:20:58 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "WSGIServer/0.2 CPython/3.8.10"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Allow",
+							"value": "POST, OPTIONS"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Length",
+							"value": "61"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Language, Cookie, Origin"
+						},
+						{
+							"key": "Content-Language",
+							"value": "en"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"link\": \"http://127.0.0.1:8000/pay/test-xyz-1631658\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Transaction Status",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/transaction/{{reference}}/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"transaction",
+						"{{reference}}",
+						""
+					]
+				},
+				"description": "# /transaction/(reference)/\n\nUse this endpoint to check for the status of an initiated transaction. When you perform an operation, for example, request payment, a reference UUID is returned which will serve as the reference for your requested transaction. Use the reference to check the transaction status"
+			},
+			"response": [
+				{
+					"name": "Pending Status",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/transaction/bcedde9b-62a7-4421-96ac-2e6179552a1a/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"transaction",
+								"bcedde9b-62a7-4421-96ac-2e6179552a1a",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.0 (Ubuntu)"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 27 Oct 2020 19:02:35 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "176"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Allow",
+							"value": "GET, OPTIONS"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Language, Origin"
+						},
+						{
+							"key": "Content-Language",
+							"value": "en"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"reference\": \"bcedde9b-62a7-4421-96ac-2e6179552a1a\",\n    \"status\": \"PENDING\",\n    \"amount\": 1,\n    \"currency\": \"XAF\",\n    \"operator\": \"MTN\",\n    \"code\": \"CP201027T00005\",\n    \"operator_reference\": \"1880106956\"\n}"
+				},
+				{
+					"name": "Successful Status",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/transaction/bcedde9b-62a7-4421-96ac-2e6179552a1a/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"transaction",
+								"bcedde9b-62a7-4421-96ac-2e6179552a1a",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.0 (Ubuntu)"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 27 Oct 2020 19:04:00 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "176"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Allow",
+							"value": "GET, OPTIONS"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Language, Origin"
+						},
+						{
+							"key": "Content-Language",
+							"value": "en"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"reference\": \"bcedde9b-62a7-4421-96ac-2e6179552a1a\",\n    \"status\": \"SUCCESSFUL\",\n    \"amount\": 1,\n    \"currency\": \"XAF\",\n    \"operator\": \"MTN\",\n    \"code\": \"CP201027T00005\",\n    \"operator_reference\": \"1880106956\"\n}"
+				},
+				{
+					"name": "Failed Status",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/transaction/bcedde9b-62a7-4421-96ac-2e6179552a1a/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"transaction",
+								"bcedde9b-62a7-4421-96ac-2e6179552a1a",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Server",
+							"value": "nginx/1.14.0 (Ubuntu)"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 27 Oct 2020 19:04:00 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "176"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Allow",
+							"value": "GET, OPTIONS"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Language, Origin"
+						},
+						{
+							"key": "Content-Language",
+							"value": "en"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"reference\": \"bcedde9b-62a7-4421-96ac-2e6179552a1a\",\n    \"status\": \"FAILED\",\n    \"amount\": 1,\n    \"currency\": \"XAF\",\n    \"operator\": \"MTN\",\n    \"code\": \"CP201027T00005\",\n    \"operator_reference\": \"1880106956\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Withdraw funds",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\": \"1\",\n    \"to\": \"{{from}}\",\n    \"description\": \"{{description}}\",\n    \"external_reference\": \"{{external_reference}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/withdraw/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"withdraw",
+						""
+					]
+				},
+				"description": "# /withdraw/\n\nWithdraw funds from an app to a mobile money account. Ensure phone number has country code.  \n  \nNote: **Withdrawals through the API must be allowed under your application settings**\n\nThis endpoint supports **Idempotency** on **external_reference field.** If you make the first request with a particular external_reference and then make the second request with the same external_reference as the first, you will get the results of the first request. Change the external_reference or leave it blank to initiate a new transaction\n\n# Request Body\n\n**Format**: Json  \n  \n**Parameters**:  \n\n<ul><li><p>\"<b>amount</b>\": \"A valid <b>integer</b>\" e.g \"5\",</p></li><li><p>\"<b>to</b>\": \"A valid phone number with country code\" e.g \"237679587525\",</p></li><li><p>\"<b>description</b>\": \"Payment description\",</p></li><li><p>\"<b>external_reference</b>\": \"OPTIONAL. You can use this field to specify the reference of the transaction generated by your system. We will return this reference to you on the /transaction status endpoint\"</p></li><li><p>\"<b>external_reference</b>\": \"A valid <b>UUID4</b>\". Example here <a rel=\"noreferrer noopener nofollow\" href=\"https://www.uuidgenerator.net\" target=\"_blank\" url=\"https://www.uuidgenerator.net\">https://www.uuidgenerator.net</a> e.g \"a2707130-2419-441e-95b8-1bddefc2cbfb\". Each request should have a unique UUID. A request with a duplicate UUID will be <b>rejected</b></p></li><p></p></ul>\n\n# Response Body\n\n**Format**: Json  \n  \n**Parameters**:  \n\n<ul><li><p>\"<b>reference</b>\": \"A valid <b>UUID4</b>. This reference is used to check the status of the transaction. Use the <code>/transaction/(reference)/</code> endpoint to check the status.</p></li></ul>\n\n# **Successful response status code**:\n\n###### 200"
+			},
+			"response": []
+		},
+		{
+			"name": "Webhook or Callback",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://example.com/yourcallback?status=SUCCESSFUL&reference=xyz&amount=100&currency=XAF&operator=MTN&code=ABC1234567890&operator_reference=1234567890&signature=asdfasdfasdfasdfasdf&endpoint=collect&external_reference=asdfasdfasdfadsasdf&external_user=xyz&extra_first_name=xyz&extra_last_name=xyz&extra_email=test@zyz.com&phone_number=237123456789",
+					"protocol": "https",
+					"host": [
+						"example",
+						"com"
+					],
+					"path": [
+						"yourcallback"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "SUCCESSFUL"
+						},
+						{
+							"key": "reference",
+							"value": "xyz"
+						},
+						{
+							"key": "amount",
+							"value": "100"
+						},
+						{
+							"key": "currency",
+							"value": "XAF"
+						},
+						{
+							"key": "operator",
+							"value": "MTN"
+						},
+						{
+							"key": "code",
+							"value": "ABC1234567890"
+						},
+						{
+							"key": "operator_reference",
+							"value": "1234567890"
+						},
+						{
+							"key": "signature",
+							"value": "asdfasdfasdfasdfasdf"
+						},
+						{
+							"key": "endpoint",
+							"value": "collect"
+						},
+						{
+							"key": "external_reference",
+							"value": "asdfasdfasdfadsasdf"
+						},
+						{
+							"key": "external_user",
+							"value": "xyz"
+						},
+						{
+							"key": "extra_first_name",
+							"value": "xyz"
+						},
+						{
+							"key": "extra_last_name",
+							"value": "xyz"
+						},
+						{
+							"key": "extra_email",
+							"value": "test@zyz.com"
+						},
+						{
+							"key": "phone_number",
+							"value": "237123456789"
+						}
+					]
+				},
+				"description": "Define a callback url under your registered app.\n\nYour callback url will be notified when a transaction is SUCCESSFUL or FAILED.  \nYou can set if your callback url should expect a GET or POST request.\n\n\\*If your callback url method is **GET,** expect a request with the following parameters. If your callback url is **POST**, expect a request with following JSON data:\n\n<ul><li><p><b>status</b>: \"SUCCESSFUL\" or \"FAILED\",</p></li><li><p><b>reference</b>: \"Reference of the transaction. A valid UUID4\",</p></li><li><p><b>amount</b>: \"Transaction amount\",</p></li><li><p><b>currency</b>: \"Transaction currency\",</p></li><li><p><b>operator</b>: \"MTN or ORANGE\",</p></li><li><p><b>code</b>: \"CamPay Reference\",</p></li><li><p><b>operator_reference</b>: \"Mobile Operator Reference\"</p></li><li><p><b>signature</b>:\"jwt token. You can validate this request that is coming from CamPay by using your app webhook key to validate the jwt token\"</p></li><li><p><b>endpoint</b>: \"collect\" or \"withdraw\". This shows the kind of transaction that was performed. Deposits are \"collect\" while Withdrawals are \"withdraw\".</p></li><li><p><b>external_reference</b>: The reference on the platform that initiated the transaction.</p></li><li><p><b>external_user</b>: The user on the platform that initiated the transaction.</p></li><li><p><b>extra_first_name</b>: First name provided when the transaction was initiated.</p></li><li><p><b>extra_last_name</b>: Last name provided when the transaction was initiated.</p></li><li><p><b>extra_email</b>: Email provided when the transaction was initiated.</p></li><li><div><b>phone_number</b>: The phone number that initiated the transaction</div></li></ul>"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Application Balance",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/balance/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"balance",
+						""
+					]
+				},
+				"description": "# /balance/\n\nReturns\n- total_balance\n- mtn_balance\n- orange_balance"
+			},
+			"response": [
+				{
+					"name": "Successful example",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/balance/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"balance",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sat, 16 Jan 2021 17:06:55 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "WSGIServer/0.2 CPython/3.8.5"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Allow",
+							"value": "OPTIONS, GET"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Length",
+							"value": "83"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Language, Origin"
+						},
+						{
+							"key": "Content-Language",
+							"value": "en"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"total_balance\": 0.00,\n    \"mtn_balance\": 0.00,\n    \"orange_balance\": 0.00,\n    \"currency\": \"XAF\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Transaction History",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"start_date\": \"2021-01-01\",\n    \"end_date\": \"2021-01-30\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/history/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"history",
+						""
+					]
+				},
+				"description": "# /history/\n\nThis endpoint is used to query your app's transaction history. <br>\nIt requires the \"start_date\" and \"end_date\" to be provided in the POST data. <br>\nNote: The date should be in the format YYYY-MM-DD"
+			},
+			"response": [
+				{
+					"name": "Transaction History",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"start_date\": \"2021-01-01\",\n    \"end_date\": \"2021-01-30\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/history/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"history",
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Fri, 07 May 2021 02:28:43 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "WSGIServer/0.2 CPython/3.8.5"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Allow",
+							"value": "OPTIONS, POST"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Length",
+							"value": "3308"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Language, Cookie, Origin"
+						},
+						{
+							"key": "Content-Language",
+							"value": "en"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "same-origin"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"datetime\": \"2021-01-29T09:52:34.876707Z\",\n            \"code\": \"CP210129D0001P\",\n            \"operator_tx_code\": \"MP210129.1052.A35072\",\n            \"operator\": \"Orange\",\n            \"phone_number\": \"237696546822\",\n            \"description\": \"Test\",\n            \"external_user\": \"\",\n            \"amount\": 5,\n            \"charge_amount\": 0.05,\n            \"debit\": 0,\n            \"credit\": 4.95,\n            \"status\": \"SUCCESSFUL\",\n            \"reference_uuid\": \"25c63c72-8485-4059-85ad-fdb4bfb26c21\"\n        },\n        {\n            \"datetime\": \"2021-01-25T12:44:11.808507Z\",\n            \"code\": \"CP210125D0001N\",\n            \"operator_tx_code\": \"2171591856\",\n            \"operator\": \"MTN\",\n            \"phone_number\": \"237679587525\",\n            \"description\": \"Test\",\n            \"external_user\": \"\",\n            \"amount\": 5,\n            \"charge_amount\": 0.05,\n            \"debit\": 0,\n            \"credit\": 4.95,\n            \"status\": \"FAILED\",\n            \"reference_uuid\": \"769dc5c3-1a98-4788-bac4-2daaa49a58b6\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Utilities: Airtime Tansfer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Token {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amount\":\"{{amount}}\",\n    \"to\":\"{{to}}\",\n    \"external_reference\":\"{{external_reference}}\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/utilities/airtime/transfer/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"utilities",
+						"airtime",
+						"transfer",
+						""
+					]
+				},
+				"description": "Transfer airtime to mobile numbers.\nOn sandbox or demo environment, manimum and maximum amount is 100 XAF"
+			},
+			"response": []
+		},
+		{
+			"name": "Utilities: Transaction Status",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Token {{access_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/utilities/transaction/{{reference}}/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"utilities",
+						"transaction",
+						"{{reference}}",
+						""
+					]
+				},
+				"description": "Check the status of an initiated utility(Airtime) transaction"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://demo.campay.net"
+		},
+		{
+			"key": "app_username",
+			"value": "b-8OfojjDf35sqwli92G2t_EU4s7Oxxbp0wEWvX_ITTUUsIkSLiQWo7c_jG0ok8E59EM8A5OXVQ-Y1FeTtTRnw"
+		},
+		{
+			"key": "app_password",
+			"value": "hFOs7Ibg0yyN0fsDq8CFvI2QRZHmGgUMObyetKli0N07uZ8eq9d3Gr2GfjsQjvP9m5YtmQk7asBefJdNgwBzTg"
+		},
+		{
+			"key": "access_token",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsInVpZCI6Mn0.eyJpYXQiOjE2MDc0OTk4MDMsIm5iZiI6MTYwNzQ5OTgwMywiZXhwIjoxNjA3NTAzNDAzfQ.wDVpvyC00u5EX8KpddbNc8zbg43XFBrDYD7gJbeAc3w"
+		},
+		{
+			"key": "amount",
+			"value": "5"
+		},
+		{
+			"key": "from",
+			"value": "2376XXXXXXXX"
+		},
+		{
+			"key": "description",
+			"value": "Test"
+		},
+		{
+			"key": "reference",
+			"value": "(reference)"
+		},
+		{
+			"key": "external_reference",
+			"value": ""
+		},
+		{
+			"key": "currency",
+			"value": "XAF"
+		},
+		{
+			"key": "to",
+			"value": "237XXXXXXXX"
+		},
+		{
+			"key": "redirect_url",
+			"value": "https://example.com"
+		},
+		{
+			"key": "first_name",
+			"value": "John"
+		},
+		{
+			"key": "last_name",
+			"value": "Doe"
+		},
+		{
+			"key": "email",
+			"value": "example@mail.com"
+		}
+	]
+}

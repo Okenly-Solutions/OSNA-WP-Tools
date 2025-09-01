@@ -126,6 +126,11 @@ class OSNA_Tools
             $payment_gateways = new Payment_Gateways();
             $payment_gateways->init();
         }
+
+        // Initialize Referral System
+        require_once OSNA_TOOLS_PLUGIN_DIR . 'includes/referral-system/class-referral-system.php';
+        $referral_system = new Referral_System();
+        $referral_system->init();
     }
 
     /**

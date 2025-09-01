@@ -1,0 +1,323 @@
+/* Referral System Admin Styles */
+
+.osna-referral-overview {
+    margin: 20px 0;
+}
+
+.osna-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.osna-stat-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.osna-stat-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 32px;
+    font-weight: bold;
+    color: #23282d;
+}
+
+.osna-stat-card p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.osna-stat-number {
+    font-size: 36px;
+    font-weight: bold;
+    color: #0073aa;
+    margin-bottom: 10px;
+}
+
+/* Chart Section */
+.osna-referral-charts {
+    margin: 30px 0;
+}
+
+.osna-chart-container {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.osna-chart-container h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #23282d;
+}
+
+/* Tabs */
+.osna-referral-tabs {
+    margin-top: 30px;
+}
+
+.osna-tab-content {
+    display: none;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-top: none;
+    padding: 20px;
+}
+
+.osna-tab-content.active {
+    display: block;
+}
+
+/* Table Controls */
+.osna-table-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.osna-search-box {
+    display: flex;
+    gap: 5px;
+}
+
+.osna-search-box input {
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+/* Table Styles */
+.osna-table-container {
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+
+.osna-table-container table {
+    width: 100%;
+    min-width: 800px;
+}
+
+.status-active {
+    background: #46b450;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.status-inactive {
+    background: #dc3232;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+/* Modal Styles */
+.osna-modal {
+    position: fixed;
+    z-index: 100000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.osna-modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 4px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.osna-modal-content h2 {
+    background: #f1f1f1;
+    margin: 0;
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.osna-modal-content .form-table {
+    margin: 20px;
+}
+
+.osna-modal-content .submit {
+    margin: 0 20px 20px 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+
+.osna-modal-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 1;
+    margin-top: -5px;
+}
+
+.osna-modal-close:hover,
+.osna-modal-close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Pagination */
+.osna-pagination {
+    margin-top: 20px;
+}
+
+.osna-pagination .tablenav {
+    height: auto;
+}
+
+.osna-pagination .pagination-links {
+    display: inline-block;
+}
+
+.osna-pagination .pagination-links a,
+.osna-pagination .pagination-links span {
+    display: inline-block;
+    padding: 6px 10px;
+    margin: 0 2px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    background: #f7f7f7;
+}
+
+.osna-pagination .pagination-links a:hover {
+    background: #e6e6e6;
+}
+
+.osna-pagination .current-page {
+    background: #0073aa !important;
+    color: white !important;
+}
+
+/* Form Styles */
+.form-table th {
+    width: 200px;
+    vertical-align: top;
+    padding-top: 15px;
+}
+
+.form-table td {
+    vertical-align: top;
+    padding: 10px 0;
+}
+
+.form-table input[type="text"],
+.form-table input[type="number"],
+.form-table select {
+    width: 100%;
+    max-width: 300px;
+}
+
+.form-table .description {
+    font-style: italic;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .osna-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .osna-table-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .osna-search-box {
+        justify-content: stretch;
+    }
+    
+    .osna-search-box input {
+        flex: 1;
+    }
+    
+    .osna-modal-content {
+        width: 95%;
+        margin: 2% auto;
+    }
+    
+    .form-table th,
+    .form-table td {
+        display: block;
+        width: 100%;
+    }
+    
+    .form-table th {
+        padding-bottom: 5px;
+    }
+    
+    .form-table td {
+        padding-top: 0;
+        padding-bottom: 15px;
+    }
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #ccc;
+    border-top-color: #0073aa;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Success/Error Messages */
+.osna-message {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 3px;
+}
+
+.osna-message.success {
+    background: #dff0d8;
+    border: 1px solid #d6e9c6;
+    color: #3c763d;
+}
+
+.osna-message.error {
+    background: #f2dede;
+    border: 1px solid #ebccd1;
+    color: #a94442;
+}

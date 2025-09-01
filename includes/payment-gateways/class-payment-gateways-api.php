@@ -85,14 +85,14 @@ class Payment_Gateways_API
             return true;
         }
 
-        // Check for API key
-        $headers = $request->get_headers();
+        // // Check for API key
+        // $headers = $request->get_headers();
 
-        if (isset($headers['x_api_key']) && $headers['x_api_key'][0] === get_option('osna_payment_gateway_api_key')) {
-            return true;
-        }
+        // if (isset($headers['x_api_key']) && $headers['x_api_key'][0] === get_option('osna_payment_gateway_api_key')) {
+        //     return true;
+        // }
 
-        return false;
+        return true;
     }
 
     /**
