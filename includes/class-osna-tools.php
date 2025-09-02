@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The core plugin class.
  *
@@ -49,8 +50,7 @@ class OSNA_Tools
         $this->plugin_name = 'osna-wp-tools';
 
         $this->load_dependencies();
-        $this->setup_cors();
-        $this->set_locale();
+        $this->setup_cors(); // Add this line
         $this->define_admin_hooks();
         $this->define_public_hooks();
     }
@@ -129,11 +129,9 @@ class OSNA_Tools
         }
 
         // Initialize Referral System
-        if (file_exists(OSNA_TOOLS_PLUGIN_DIR . 'includes/referral-system/class-referral-system.php')) {
-            require_once OSNA_TOOLS_PLUGIN_DIR . 'includes/referral-system/class-referral-system.php';
-            $referral_system = new Referral_System();
-            $referral_system->init();
-        }
+        require_once OSNA_TOOLS_PLUGIN_DIR . 'includes/referral-system/class-referral-system.php';
+        $referral_system = new Referral_System();
+        $referral_system->init();
     }
 
     /**
@@ -193,23 +191,6 @@ class OSNA_Tools
     public function get_version()
     {
         return $this->version;
-    }
-
-    /**
-     * Define the locale for this plugin for internationalization.
-     *
-     * @since    1.0.0
-     * @access   private
-     */
-    private function set_locale()
-    {
-        add_action('init', function() {
-            load_plugin_textdomain(
-                'osna-wp-tools',
-                false,
-                dirname(dirname(plugin_basename(__FILE__))) . '/languages/'
-            );
-        });
     }
 
     /**
