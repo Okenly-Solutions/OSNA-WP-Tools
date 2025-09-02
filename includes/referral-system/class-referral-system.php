@@ -45,68 +45,85 @@ class Referral_System
 
         $charset_collate = $wpdb->get_charset_collate();
 
-        // Referral codes table
+        // Check if tables already exist and are properly structured
         $referral_codes_table = $wpdb->prefix . 'osna_referral_codes';
-        $sql1 = "CREATE TABLE IF NOT EXISTS $referral_codes_table (
-            id bigint(20) NOT NULL AUTO_INCREMENT,
-            code varchar(20) NOT NULL UNIQUE,
-            user_id bigint(20) NOT NULL,
-            discount_type varchar(20) NOT NULL DEFAULT 'percentage',
-            discount_value decimal(10,2) NOT NULL DEFAULT 0.00,
-            reward_type varchar(20) NOT NULL DEFAULT 'fixed',
-            reward_value decimal(10,2) NOT NULL DEFAULT 0.00,
-            usage_limit int(11) DEFAULT NULL,
-            usage_count int(11) NOT NULL DEFAULT 0,
-            status varchar(20) NOT NULL DEFAULT 'active',
-            created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY user_id (user_id),
-            KEY code (code),
-            KEY status (status)
-        ) $charset_collate;";
+        $table_exists = $wpdb->get_var("SHOW TABLES LIKE '$referral_codes_table'") === $referral_codes_table;
+
+        if (!$table_exists) {
+            // Referral codes table
+            $sql1 = "CREATE TABLE $referral_codes_table (
+                id bigint(20) NOT NULL AUTO_INCREMENT,
+                code varchar(20) NOT NULL,
+                user_id bigint(20) NOT NULL,
+                discount_type varchar(20) NOT NULL DEFAULT 'percentage',
+                discount_value decimal(10,2) NOT NULL DEFAULT 0.00,
+                reward_type varchar(20) NOT NULL DEFAULT 'fixed',
+                reward_value decimal(10,2) NOT NULL DEFAULT 0.00,
+                usage_limit int(11) DEFAULT NULL,
+                usage_count int(11) NOT NULL DEFAULT 0,
+                status varchar(20) NOT NULL DEFAULT 'active',
+                created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY code_unique (code),
+                KEY user_id (user_id),
+                KEY status (status)
+            ) $charset_collate;";
+
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql1);
+        }
 
         // Referral usage table
         $referral_usage_table = $wpdb->prefix . 'osna_referral_usage';
-        $sql2 = "CREATE TABLE IF NOT EXISTS $referral_usage_table (
-            id bigint(20) NOT NULL AUTO_INCREMENT,
-            referral_code_id bigint(20) NOT NULL,
-            referrer_id bigint(20) NOT NULL,
-            referee_id bigint(20) NOT NULL,
-            order_id bigint(20) NOT NULL,
-            discount_amount decimal(10,2) NOT NULL DEFAULT 0.00,
-            reward_amount decimal(10,2) NOT NULL DEFAULT 0.00,
-            reward_status varchar(20) NOT NULL DEFAULT 'pending',
-            created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY referral_code_id (referral_code_id),
-            KEY referrer_id (referrer_id),
-            KEY referee_id (referee_id),
-            KEY order_id (order_id),
-            KEY reward_status (reward_status)
-        ) $charset_collate;";
+        $usage_table_exists = $wpdb->get_var("SHOW TABLES LIKE '$referral_usage_table'") === $referral_usage_table;
+
+        if (!$usage_table_exists) {
+            $sql2 = "CREATE TABLE $referral_usage_table (
+                id bigint(20) NOT NULL AUTO_INCREMENT,
+                referral_code_id bigint(20) NOT NULL,
+                referrer_id bigint(20) NOT NULL,
+                referee_id bigint(20) NOT NULL,
+                order_id bigint(20) NOT NULL,
+                discount_amount decimal(10,2) NOT NULL DEFAULT 0.00,
+                reward_amount decimal(10,2) NOT NULL DEFAULT 0.00,
+                reward_status varchar(20) NOT NULL DEFAULT 'pending',
+                created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY referral_code_id (referral_code_id),
+                KEY referrer_id (referrer_id),
+                KEY referee_id (referee_id),
+                KEY order_id (order_id),
+                KEY reward_status (reward_status)
+            ) $charset_collate;";
+
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql2);
+        }
 
         // Referral rewards table
         $referral_rewards_table = $wpdb->prefix . 'osna_referral_rewards';
-        $sql3 = "CREATE TABLE IF NOT EXISTS $referral_rewards_table (
-            id bigint(20) NOT NULL AUTO_INCREMENT,
-            user_id bigint(20) NOT NULL,
-            referral_usage_id bigint(20) NOT NULL,
-            reward_type varchar(20) NOT NULL,
-            reward_value decimal(10,2) NOT NULL,
-            status varchar(20) NOT NULL DEFAULT 'pending',
-            processed_at datetime DEFAULT NULL,
-            created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (id),
-            KEY user_id (user_id),
-            KEY referral_usage_id (referral_usage_id),
-            KEY status (status)
-        ) $charset_collate;";
+        $rewards_table_exists = $wpdb->get_var("SHOW TABLES LIKE '$referral_rewards_table'") === $referral_rewards_table;
 
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql1);
-        dbDelta($sql2);
-        dbDelta($sql3);
+        if (!$rewards_table_exists) {
+            $sql3 = "CREATE TABLE $referral_rewards_table (
+                id bigint(20) NOT NULL AUTO_INCREMENT,
+                user_id bigint(20) NOT NULL,
+                referral_usage_id bigint(20) NOT NULL,
+                reward_type varchar(20) NOT NULL,
+                reward_value decimal(10,2) NOT NULL,
+                status varchar(20) NOT NULL DEFAULT 'pending',
+                processed_at datetime DEFAULT NULL,
+                created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY user_id (user_id),
+                KEY referral_usage_id (referral_usage_id),
+                KEY status (status)
+            ) $charset_collate;";
+
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql3);
+        }
     }
 
     /**

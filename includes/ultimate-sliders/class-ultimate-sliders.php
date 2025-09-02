@@ -28,6 +28,7 @@ class Ultimate_Sliders
     {
         // Load dependencies
         require_once OSNA_TOOLS_PLUGIN_DIR . 'includes/ultimate-sliders/class-ultimate-sliders-post-type.php';
+        require_once OSNA_TOOLS_PLUGIN_DIR . 'includes/ultimate-sliders/class-ultimate-sliders-rest-controller.php';
         require_once OSNA_TOOLS_PLUGIN_DIR . 'includes/ultimate-sliders/class-ultimate-sliders-graphql.php';
 
         // Initialize post type
@@ -41,6 +42,9 @@ class Ultimate_Sliders
 
         // Register REST API endpoints
         add_action('rest_api_init', array($this, 'register_rest_routes'));
+        
+        // Fix REST API permissions for custom post type
+        add_filter('rest_api_init', array($this, 'fix_rest_permissions'));
 
         // Initialize GraphQL support if WPGraphQL is active
         if (class_exists('WPGraphQL')) {
@@ -178,5 +182,51 @@ class Ultimate_Sliders
             ),
             'slides' => $slides,
         );
+    }
+
+    /**
+     * Fix REST API permissions for ultimate_slider post type.
+     *
+     * @since    1.0.0
+     */
+    public function fix_rest_permissions()
+    {
+        // Add filter to handle permissions for ultimate_slider post type
+        add_filter('rest_pre_dispatch', function($result, $server, $request) {
+            if (!empty($result)) {
+                return $result;
+            }
+
+            $route = $request->get_route();
+            $method = $request->get_method();
+            
+            // Handle ultimate-sliders REST API endpoints
+            if (preg_match('#^/wp/v2/ultimate-sliders#', $route)) {
+                // Check if user is logged in and has proper capabilities
+                if (!is_user_logged_in()) {
+                    return new WP_Error(
+                        'rest_not_logged_in',
+                        __('You are not currently logged in.'),
+                        array('status' => 401)
+                    );
+                }
+
+                // Check capabilities based on method
+                $required_cap = 'read';
+                if (in_array($method, array('POST', 'PUT', 'PATCH', 'DELETE'))) {
+                    $required_cap = 'edit_posts';
+                }
+
+                if (!current_user_can($required_cap)) {
+                    return new WP_Error(
+                        'rest_forbidden',
+                        __('Sorry, you are not allowed to do that.'),
+                        array('status' => 403)
+                    );
+                }
+            }
+
+            return $result;
+        }, 10, 3);
     }
 }

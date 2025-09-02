@@ -64,16 +64,22 @@ class Ultimate_Sliders_Post_Type
             'has_archive' => false,
             'exclude_from_search' => true,
             'publicly_queryable' => true,
-            'capability_type' => 'page',
+            'capability_type' => 'post',
+            'map_meta_cap' => true,
             'show_in_rest' => true,
-            'rest_base' => 'ultimate-sliders',
+            'rest_base' => 'ultimate-sliders', 
+            'rest_controller_class' => 'Ultimate_Sliders_REST_Controller',
             'show_in_graphql' => true,
             'graphql_single_name' => 'ultimateSlider',
             'graphql_plural_name' => 'ultimateSliders',
         );
 
         register_post_type('ultimate_slider', $args);
+
+        // Add REST API permission filters
+        add_filter('rest_pre_dispatch', array($this, 'fix_rest_api_permissions'), 10, 3);
     }
+
 
     /**
      * Register meta boxes for the Ultimate Sliders post type.
@@ -328,15 +334,6 @@ class Ultimate_Sliders_Post_Type
      */
     public function save_meta_box_data($post_id, $post)
     {
-        // Check if our nonces are set and verify them
-        if (!isset($_POST['ultimate_slider_settings_nonce']) || !wp_verify_nonce($_POST['ultimate_slider_settings_nonce'], 'ultimate_slider_settings_nonce')) {
-            return;
-        }
-
-        if (!isset($_POST['ultimate_slider_slides_nonce']) || !wp_verify_nonce($_POST['ultimate_slider_slides_nonce'], 'ultimate_slider_slides_nonce')) {
-            return;
-        }
-
         // If this is an autosave, our form has not been submitted, so we don't want to do anything
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
             return;
@@ -347,12 +344,17 @@ class Ultimate_Sliders_Post_Type
             return;
         }
 
-        // Check if at least one of our nonces is set
+        // Check if at least one of our nonces is set and valid
         $settings_nonce_valid = isset($_POST['ultimate_slider_settings_nonce']) &&
             wp_verify_nonce($_POST['ultimate_slider_settings_nonce'], 'ultimate_slider_settings_nonce');
 
         $slides_nonce_valid = isset($_POST['ultimate_slider_slides_nonce']) &&
             wp_verify_nonce($_POST['ultimate_slider_slides_nonce'], 'ultimate_slider_slides_nonce');
+
+        // At least one nonce must be valid to proceed
+        if (!$settings_nonce_valid && !$slides_nonce_valid) {
+            return;
+        }
 
         // Process settings if settings nonce is valid
         if ($settings_nonce_valid) {
@@ -379,20 +381,30 @@ class Ultimate_Sliders_Post_Type
                 $slides = array();
 
                 foreach ($_POST['slides'] as $slide) {
-                    $slides[] = array(
-                        'media_type' => isset($slide['media_type']) ? sanitize_text_field($slide['media_type']) : 'image',
-                        'image_id' => isset($slide['image_id']) ? absint($slide['image_id']) : '',
-                        'video_url' => isset($slide['video_url']) ? esc_url_raw($slide['video_url']) : '',
-                        'title' => isset($slide['title']) ? sanitize_text_field($slide['title']) : '',
-                        'description' => isset($slide['description']) ? wp_kses_post($slide['description']) : '',
-                        'cta_text' => isset($slide['cta_text']) ? sanitize_text_field($slide['cta_text']) : '',
-                        'cta_url' => isset($slide['cta_url']) ? esc_url_raw($slide['cta_url']) : '',
-                        'background_color' => isset($slide['background_color']) ? sanitize_hex_color($slide['background_color']) : '#000000',
-                        'text_color' => isset($slide['text_color']) ? sanitize_hex_color($slide['text_color']) : '#ffffff',
-                    );
+                    if (is_array($slide)) {
+                        $slides[] = array(
+                            'media_type' => isset($slide['media_type']) ? sanitize_text_field($slide['media_type']) : 'image',
+                            'image_id' => isset($slide['image_id']) ? absint($slide['image_id']) : '',
+                            'video_url' => isset($slide['video_url']) ? esc_url_raw($slide['video_url']) : '',
+                            'title' => isset($slide['title']) ? sanitize_text_field($slide['title']) : '',
+                            'description' => isset($slide['description']) ? wp_kses_post($slide['description']) : '',
+                            'cta_text' => isset($slide['cta_text']) ? sanitize_text_field($slide['cta_text']) : '',
+                            'cta_url' => isset($slide['cta_url']) ? esc_url_raw($slide['cta_url']) : '',
+                            'background_color' => isset($slide['background_color']) ? sanitize_hex_color($slide['background_color']) : '#000000',
+                            'text_color' => isset($slide['text_color']) ? sanitize_hex_color($slide['text_color']) : '#ffffff',
+                        );
+                    }
                 }
 
-                update_post_meta($post_id, '_ultimate_slider_slides', $slides);
+                $result = update_post_meta($post_id, '_ultimate_slider_slides', $slides);
+                
+                // Add success notification
+                if ($result !== false) {
+                    $this->log_error('Slider saved successfully', 'success');
+                }
+            } else {
+                // Clear slides if no slides data provided
+                update_post_meta($post_id, '_ultimate_slider_slides', array());
             }
         }
     }
@@ -435,14 +447,48 @@ class Ultimate_Sliders_Post_Type
         }
 
         $errors = get_transient('ultimate_slider_errors');
-        if (!empty($errors)) {
+        if (!empty($errors) && is_array($errors)) {
             foreach ($errors as $error) {
-                $class = 'notice notice-' . esc_attr($error['level']);
-                $message = esc_html($error['message']);
-                echo "<div class='$class'><p>$message</p></div>";
+                if (isset($error['message']) && isset($error['level'])) {
+                    $class = 'notice notice-' . esc_attr($error['level']) . ' is-dismissible';
+                    $message = esc_html($error['message']);
+                    ?>
+                    <div class="<?php echo esc_attr($class); ?>">
+                        <p><?php echo $message; ?></p>
+                    </div>
+                    <?php
+                }
             }
             // Clear errors after displaying
             delete_transient('ultimate_slider_errors');
         }
     }
+
+    /**
+     * Fix REST API permissions for ultimate_slider post type.
+     *
+     * @since    1.0.0
+     * @param    mixed    $result
+     * @param    object   $server
+     * @param    object   $request
+     * @return   mixed
+     */
+    public function fix_rest_api_permissions($result, $server, $request)
+    {
+        $route = $request->get_route();
+        
+        // Only handle ultimate-sliders routes
+        if (strpos($route, '/wp/v2/ultimate-sliders') === false) {
+            return $result;
+        }
+
+        // If user is logged in and has edit_posts capability, allow access
+        if (is_user_logged_in() && current_user_can('edit_posts')) {
+            // Return null to let the request continue
+            return null;
+        }
+
+        return $result;
+    }
+
 }
